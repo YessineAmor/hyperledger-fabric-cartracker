@@ -1,0 +1,153 @@
+#
+# Copyright 2018 IBM All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+version: '2'
+
+
+services:
+
+  orderer.cartracker.com:
+    container_name: orderer.cartracker.com
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=CarTrackerOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ../crypto-config/ordererOrganizations/cartracker.com/orderers/orderer.cartracker.com/msp:/var/hyperledger/orderer/msp
+    - ../crypto-config/ordererOrganizations/cartracker.com/orderers/orderer.cartracker.com/tls/:/var/hyperledger/orderer/tls
+    - orderer.cartracker.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+
+  peer0.manufacturerorg.cartracker.com:
+    container_name: peer0.manufacturerorg.cartracker.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.manufacturerorg.cartracker.com
+      - CORE_PEER_ADDRESS=peer0.manufacturerorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.manufacturerorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.manufacturerorg.cartracker.com:7051
+      - CORE_PEER_LOCALMSPID=ManufacturerOrgMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/manufacturerorg.cartracker.com/peers/peer0.manufacturerorg.cartracker.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/manufacturerorg.cartracker.com/peers/peer0.manufacturerorg.cartracker.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.manufacturerorg.cartracker.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+      - 7053:7053
+      - 7055:6060
+
+  peer0.dealershiporg.cartracker.com:
+    container_name: peer0.dealershiporg.cartracker.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.dealershiporg.cartracker.com
+      - CORE_PEER_ADDRESS=peer0.dealershiporg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.dealershiporg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.dealershiporg.cartracker.com:7051
+      - CORE_PEER_LOCALMSPID=DealershipOrgMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/dealershiporg.cartracker.com/peers/peer0.dealershiporg.cartracker.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/dealershiporg.cartracker.com/peers/peer0.dealershiporg.cartracker.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.dealershiporg.cartracker.com:/var/hyperledger/production
+    ports:
+      - 8051:7051
+      - 8053:7053
+      - 8055:6060
+
+  peer0.insuranceorg.cartracker.com:
+    container_name: peer0.insuranceorg.cartracker.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.insuranceorg.cartracker.com
+      - CORE_PEER_ADDRESS=peer0.insuranceorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.insuranceorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.insuranceorg.cartracker.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceOrgMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/insuranceorg.cartracker.com/peers/peer0.insuranceorg.cartracker.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/insuranceorg.cartracker.com/peers/peer0.insuranceorg.cartracker.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.insuranceorg.cartracker.com:/var/hyperledger/production
+    ports:
+      - 9051:7051
+      - 9053:7053
+      - 9055:6060
+
+  peer0.carregistrationauthorityorg.cartracker.com:
+    container_name: peer0.carregistrationauthorityorg.cartracker.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.carregistrationauthorityorg.cartracker.com
+      - CORE_PEER_ADDRESS=peer0.carregistrationauthorityorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.carregistrationauthorityorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.carregistrationauthorityorg.cartracker.com:7051
+      - CORE_PEER_LOCALMSPID=CarRegistrationAuthorityOrgMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/carregistrationauthorityorg.cartracker.com/peers/peer0.carregistrationauthorityorg.cartracker.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/carregistrationauthorityorg.cartracker.com/peers/peer0.carregistrationauthorityorg.cartracker.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.carregistrationauthorityorg.cartracker.com:/var/hyperledger/production
+    ports:
+      - 10051:7051
+      - 10053:7053
+      - 10055:6060
+
+  peer0.buyerorg.cartracker.com:
+    container_name: peer0.buyerorg.cartracker.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.buyerorg.cartracker.com
+      - CORE_PEER_ADDRESS=peer0.buyerorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.buyerorg.cartracker.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.buyerorg.cartracker.com:7051
+      - CORE_PEER_LOCALMSPID=BuyerOrgMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/buyerorg.cartracker.com/peers/peer0.buyerorg.cartracker.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/buyerorg.cartracker.com/peers/peer0.buyerorg.cartracker.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.buyerorg.cartracker.com:/var/hyperledger/production
+    ports:
+      - 11051:7051
+      - 11053:7053
+      - 11055:6060
+
+

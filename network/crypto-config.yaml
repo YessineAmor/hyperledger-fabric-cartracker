@@ -1,0 +1,70 @@
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # CarTrackerOrderer
+  # ---------------------------------------------------------------------------
+  - Name: CarTrackerOrderer
+    Domain: cartracker.com
+    # ---------------------------------------------------------------------------
+    # "Specs" - See PeerOrgs below for complete description
+    # ---------------------------------------------------------------------------
+    Specs:
+      - Hostname: orderer
+      
+PeerOrgs:
+  # ---------------------------------------------------------------------------\n
+
+# ---------------------------------------------------------------------------
+    # ManufacturerOrg
+    # ---------------------------------------------------------------------------
+    - Name: ManufacturerOrg
+      Domain: manufacturerorg.cartracker.com
+      EnableNodeOUs: true
+      Template:
+        Count: 1
+      Users:
+        Count: 1
+    
+# ---------------------------------------------------------------------------
+    # DealershipOrg
+    # ---------------------------------------------------------------------------
+    - Name: DealershipOrg
+      Domain: dealershiporg.cartracker.com
+      EnableNodeOUs: true
+      Template:
+        Count: 1
+      Users:
+        Count: 1
+    
+# ---------------------------------------------------------------------------
+    # InsuranceOrg
+    # ---------------------------------------------------------------------------
+    - Name: InsuranceOrg
+      Domain: insuranceorg.cartracker.com
+      EnableNodeOUs: true
+      Template:
+        Count: 1
+      Users:
+        Count: 1
+    
+# ---------------------------------------------------------------------------
+    # CarRegistrationAuthorityOrg
+    # ---------------------------------------------------------------------------
+    - Name: CarRegistrationAuthorityOrg
+      Domain: carregistrationauthorityorg.cartracker.com
+      EnableNodeOUs: true
+      Template:
+        Count: 1
+      Users:
+        Count: 1
+    
+# ---------------------------------------------------------------------------
+    # BuyerOrg
+    # ---------------------------------------------------------------------------
+    - Name: BuyerOrg
+      Domain: buyerorg.cartracker.com
+      EnableNodeOUs: true
+      Template:
+        Count: 1
+      Users:
+        Count: 1
+    
