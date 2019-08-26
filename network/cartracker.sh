@@ -493,6 +493,20 @@ function generateChannelConfigForNewOrg() {
   echo
 }
 
+function generateChaincodeFiles() {
+  # Generate constants.go file
+  CONSTS_STRING="package ${PROFILE_NAME,,}
+
+const (
+"
+  for ORG in $ORGS_LIST; do
+    CONSTS_STRING=$CONSTS_STRING"	${ORG}MSP    = \"${ORG}MSP\"
+	${ORG}CA     = \"ca.${ORG,,}.cartracker.com\"
+"
+  done
+  echo "$CONSTS_STRING)" >../chaincode/src/${PROFILE_NAME,,}/constants.go
+}
+
 function generateDockerComposeFile() {
   echo "generating docker-compose-e2e-template file"
   # Check and delete existing config files
@@ -1049,6 +1063,7 @@ elif [ "${MODE}" == "generateAll" ]; then ## Generate network files and artifact
   generateCerts
   replacePrivateKey
   generateChannelArtifacts
+  generateChaincodeFiles
 elif [ "${MODE}" == "restart" ]; then ## Restart the network
   networkDown
   networkUp
